@@ -1,4 +1,4 @@
-# CHD-XAI: Congenital Heart Disease Classification and collaborative AI Framework
+# Toward democratizing pediatric congenital heart disease diagnosis from echocardiography with collaborative AI: evidence across national-to-county hospitals
 
 This repository contains the official PyTorch implementation for the study: "[Toward democratizing pediatric congenital heart disease diagnosis from echocardiography with collaborative AI: evidence across national-to-county hospitals]". 
 

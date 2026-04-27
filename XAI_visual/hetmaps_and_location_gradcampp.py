@@ -15,8 +15,8 @@ import numpy as np
 from PIL import Image, ImageDraw
 import torch
 import torch.nn.functional as F
-from nets_set.model_single_view import ResnetTransformerDualTokensTemporalSpatialDecouplesizeGradCam
-from functions_set.functions_single_view import *
+from nets.model_single_view import ResnetTransformerDualTokensTemporalSpatialDecouplesizeGradCam
+from functions.functions_single_view import *
 from torchvision.transforms import v2
 from tqdm import tqdm
 import matplotlib.pyplot as plt

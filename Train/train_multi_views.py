@@ -13,9 +13,9 @@ import torchvision
 import sys
 import random
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from nets_set.model_multi_views import MultiViewDualTokensFusionSize
-from functions_set.functions_multi_views import *
-from datasets.dataset_mutil_views import MultiViewDataset
+from nets.model_multi_views import MultiViewDualTokensFusionSize
+from functions.functions_multi_views import *
+from Datasets.dataset_mutil_views import MultiViewDataset
 from torchvision.transforms import v2
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay

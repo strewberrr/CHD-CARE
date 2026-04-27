@@ -17,9 +17,9 @@ from timm.scheduler import CosineLRScheduler
 # Append parent directory to system path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from nets_set.model_baseline_feature import ResNetTransformerDualClsEntmaxWithDopplerMaskTemporal
-from functions_set.functions_baseline_feature import *
-from datasets.dataset_baseline_feature import ContrastivePairedDataset, StructuredPairedBatchSampler
+from nets.model_baseline_feature import ResNetTransformerDualClsEntmaxWithDopplerMaskTemporal
+from functions.functions_baseline_feature import *
+from Datasets.dataset_baseline_feature import ContrastivePairedDataset, StructuredPairedBatchSampler
 from utils import *
 
 # ==============================================================================

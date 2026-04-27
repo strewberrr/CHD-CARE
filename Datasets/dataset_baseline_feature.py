@@ -18,7 +18,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils import *
 # Assuming create_aligned_mask_for_clip is imported from functions_baseline_feature or similar
-from functions_set.functions_baseline_feature import create_aligned_mask_for_clip
+from functions.functions_baseline_feature import create_aligned_mask_for_clip
 
 # ==============================================================================
 # 1. Global Fine-grained Label Mapping and Rules

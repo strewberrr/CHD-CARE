@@ -14,9 +14,9 @@ import sys
 import random
 from collections import OrderedDict
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from nets_set.model_single_view import ResnetTransformerDualTokensTemporalSpatialDecouplesize
-from functions_set.functions_single_view import *
-from datasets.dataset_single_view import ContrastivePairedDataset
+from nets.model_single_view import ResnetTransformerDualTokensTemporalSpatialDecouplesize
+from functions.functions_single_view import *
+from Datasets.dataset_single_view import ContrastivePairedDataset
 from torchvision.transforms import v2
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay

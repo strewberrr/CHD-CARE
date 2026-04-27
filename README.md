@@ -53,11 +53,11 @@ CHD-XAI/
 │   ├── dataset_baseline_feature.py
 │   ├── dataset_mutil_views.py
 │   └── dataset_single_view.py
-├── Functions_set/              # Core training/evaluation functions and loss calculations
+├── functions/                  # Core training/evaluation functions and loss calculations
 │   ├── functions_baseline_feature.py
 │   ├── functions_multi_views.py
 │   └── functions_single_view.py
-├── Nets_set/                   # Network architecture definitions
+├── nets/                       # Network architecture definitions
 │   ├── model_baseline_feature.py
 │   ├── model_multi_views.py
 │   └── model_single_view.py
@@ -75,7 +75,7 @@ CHD-XAI/
 
 ### Detailed Module Overview
 
-#### baseline_feature/: Contains core scripts for joint pretraining and the construction of temporal normal baseline features.
+#### Baseline_feature/: Contains core scripts for joint pretraining and the construction of temporal normal baseline features.
 
 extract_baseline_features.py: Executes feature extraction on negative (normal) samples and serializes them as pre-computed baseline tensors.
 
@@ -87,7 +87,7 @@ train_baseline_feature.py: Main script for model training incorporating the base
 
 make_pickle_cropped_video.py: Data curation script for raw videos. Responsible for frame extraction, blood-flow Region of Interest (ROI) cropping, and data serialization into .pkl format to accelerate data loading.
 
-#### datasets/: Contains custom dataset classes inheriting from torch.utils.data.Dataset, handling data loading, transformation, and batch sampling.
+#### Datasets/: Contains custom dataset classes inheriting from torch.utils.data.Dataset, handling data loading, transformation, and batch sampling.
 
 dataset_baseline_feature.py: Incorporates paired sampling logic (e.g., quadruplet sampling) for contrastive learning.
 
@@ -95,7 +95,7 @@ dataset_mutil_views.py: Processes multiple echocardiography views from the same 
 
 dataset_single_view.py: Standard single-view video data loading.
 
-#### functions_set/: Encapsulates specific training and validation loop logic, alongside custom loss calculations (e.g., contrastive loss, triplet loss).
+#### functions/: Encapsulates specific training and validation loop logic, alongside custom loss calculations (e.g., contrastive loss, triplet loss).
 
 functions_baseline_feature.py: Implements the core computational logic for the joint pretraining phase, specifically handling structured quadruplet pairing and the mathematical formulation of the contrastive learning loss.
 
@@ -103,7 +103,7 @@ functions_multi_views.py: Implements processing logic for multi-view feature fus
 
 functions_single_view.py: Executes single-view feature extraction and computes classification loss
 
-#### nets_set/: Stores PyTorch-based model architecture definitions.
+#### nets/: Stores PyTorch-based model architecture definitions.
 
 model_baseline_feature.py: Pre-trained CNN and Temporal Transformer architecture for contrastive learning networks.
 

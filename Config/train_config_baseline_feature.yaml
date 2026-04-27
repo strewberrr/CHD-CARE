@@ -1,0 +1,47 @@
+train_tag: ''  
+cuda_device: ''
+
+model_name: ''
+
+d_model: 512
+temporal_nhead: 8
+temporal_layers: 6
+spatial_nhead: 8
+spatial_layers: 6
+dim_feedforward: 2048
+dropout: 0.1
+temporal_entmax_alpha: 1.5
+spatial_entmax_alpha: 2
+
+num_classes: 18
+batch_size: 16
+use_scheduler: False
+learning_rate: 3e-4
+total_epoch: 300
+
+seed: 42
+
+unfreeze_epoch: 20
+use_scheduler: true
+warmup_epochs: 10
+warmup_lr: 1e-6
+lr_min: 3e-6
+
+train_class_weight: [1.0, 1.0]
+valid_class_weight: [1.0, 1.0]
+
+pickle_path: './pickle_cropped_data_1031_WoFN_comparsion_clean'
+split_json_path: './dataset_split_1031_WoFN_comparison_clean.json'
+
+view_dropout: False
+drop_rate: 0.6
+add_bias: True
+clip_size: 16
+num_segments: 2
+segment_len: 16
+ 
+num_workers: 8
+weight_decay: 5.e-4
+momentum: 0.9
+
+resume_path: ''

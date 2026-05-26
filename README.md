@@ -40,7 +40,7 @@ The repository is modularized to separate data curation, architectural definitio
 
 ```text
 CHD-CARE/
-├── baseline_feature/           # Baseline feature extraction and pre-training modules
+├── Baseline_feature/           # Baseline feature extraction and pre-training modules
 │   ├── extract_baseline_features.py  
 │   └── train_baseline_feature.py     
 ├── Config/                     # Experimental parameters and configuration files
@@ -49,17 +49,17 @@ CHD-CARE/
 │   ├── train_config_baseline_feature.yaml
 │   ├── train_config_mutil_views.yaml
 │   └── train_config_single_view.yaml
-├── data_preprocess/            # Data preprocessing pipeline
+├── Data_preprocess/            # Data preprocessing pipeline
 │   └── make_pickle_cropped_video.py
-├── datasets/                   # Data loading modules
+├── Datasets/                   # Data loading modules
 │   ├── dataset_baseline_feature.py
 │   ├── dataset_mutil_views.py
 │   └── dataset_single_view.py
-├── functions_set/              # Core training/evaluation functions and loss calculations
+├── functions/              # Core training/evaluation functions and loss calculations
 │   ├── functions_baseline_feature.py
 │   ├── functions_multi_views.py
 │   └── functions_single_view.py
-├── nets_set/                   # Network architecture definitions
+├── nets/                   # Network architecture definitions
 │   ├── model_baseline_feature.py
 │   ├── model_multi_views.py
 │   └── model_single_view.py
@@ -79,26 +79,26 @@ CHD-CARE/
 
 ### 📂 Directory Structure and Detailed Module Overview
 
-* 🏗️ **`baseline_feature/`** — Contains core scripts for joint pretraining and the construction of temporal normal baseline features.
+* 🏗️ **`Baseline_feature/`** — Contains core scripts for joint pretraining and the construction of temporal normal baseline features.
   * `extract_baseline_features.py`: Executes feature extraction on negative (normal) samples and serializes them as pre-computed baseline tensors.
   * `train_baseline_feature.py`: Main script for model training incorporating the baseline features.
 
 * ⚙️ **`Config/`** — Stores `.yaml` configuration files for various experimental settings, encompassing hyperparameters (e.g., learning rate, batch size), file paths, and network structure configurations.
 
-* 🧹 **`data_preprocess/`** — Automated data curation pipeline.
+* 🧹 **`Data_preprocess/`** — Automated data curation pipeline.
   * `make_pickle_cropped_video.py`: Data curation script for raw videos. Responsible for frame extraction, blood-flow Region of Interest (ROI) cropping, and data serialization into `.pkl` format to accelerate data loading.
 
-* 🗄️ **`datasets/`** — Contains custom dataset classes inheriting from `torch.utils.data.Dataset`, handling data loading, transformation, and batch sampling.
+* 🗄️ **`Datasets/`** — Contains custom dataset classes inheriting from `torch.utils.data.Dataset`, handling data loading, transformation, and batch sampling.
   * `dataset_baseline_feature.py`: Incorporates paired sampling logic (e.g., quadruplet sampling) for contrastive learning.
   * `dataset_mutil_views.py`: Processes multiple echocardiography views from the same case, supporting sequence padding and multi-view data aggregation.
   * `dataset_single_view.py`: Standard single-view video data loading.
 
-* 🧮 **`functions_set/`** — Encapsulates specific training and validation loop logic, alongside custom loss calculations.
+* 🧮 **`functions/`** — Encapsulates specific training and validation loop logic, alongside custom loss calculations.
   * `functions_baseline_feature.py`: Implements the core computational logic for the joint pretraining phase, specifically handling structured quadruplet pairing and the mathematical formulation of the contrastive learning loss.
   * `functions_multi_views.py`: Implements processing logic for multi-view feature fusion and joint optimization.
   * `functions_single_view.py`: Executes single-view feature extraction and computes classification loss.
 
-* 🧠 **`nets_set/`** — Stores PyTorch-based model architecture definitions(The "Brain" of CHD-CARE).
+* 🧠 **`nets/`** — Stores PyTorch-based model architecture definitions(The "Brain" of CHD-CARE).
   * `model_baseline_feature.py`: Pre-trained CNN and Temporal Transformer architecture for contrastive learning networks.
   * `model_multi_views.py`: Model implementing multi-view feature aggregation.
   * `model_single_view.py`: Baseline CNN and interleaved Spatiotemporal Transformer network for single-view feature extraction.
@@ -114,4 +114,76 @@ CHD-CARE/
 
 * 🧰 **`utils.py`** — Contains fundamental utility functions called globally across the project, including random seed fixation, learning rate scheduling, checkpoint saving, evaluation metric calculation, denormalization, and confusion matrix updates.
 
+## 3. Quick Start: Demo Inference
 
+To facilitate easy reproduction and clinical evaluation, we provide an end-to-end inference API (`chd_care_tool.py`) and a ready-to-use demonstration script (`run_demo.py`).
+
+### 3.1 Sample Data Preparation
+
+Due to file size limitations on GitHub, the raw pediatric echocardiography videos for demonstration cannot be directly uploaded to this repository. Instead, the comprehensive sample dataset is securely hosted on Zenodo. 
+
+Please download the dataset package from the direct link below, extract the compressed files, and place the patient folders directly into the `Demo_Cases/` directory located at the root of this project:
+
+* [⬇️ Direct Download: Demo_Cases.zip](https://zenodo.org/records/20382397/files/Demo_Cases.zip?download=1)
+
+To fully demonstrate and evaluate the multi-class diagnostic capabilities of the CHD-CARE framework, these sample cases encompass all four clinical categories analyzed in our study:
+
+* **`patient_001`**: Ventricular Septal Defect (**VSD**)
+* **`patient_002`**: Atrial Septal Defect (**ASD**)
+* **`patient_003`**: Patent Ductus Arteriosus (**PDA**)
+* **`patient_004`**: **Normal** (Negative Control Group)
+
+Each patient folder contains the standard color Doppler echocardiography videos required for the analysis. After successful downloading and extraction, your local directory structure should follow this layout:
+
+```text
+CHD-CARE/
+├── Demo_Cases/
+│   ├── patient_001/                  <-- Contains raw VSD videos
+│   ├── patient_002/                  <-- Contains raw ASD videos
+│   ├── patient_003/                  <-- Contains raw PDA videos
+│   └── patient_004/                  <-- Contains raw Normal videos
+├── run_demo.py
+├── chd_care_tool.py
+├── inference.py
+└── ...
+```
+
+### 3.2 Model Weights & Preparation
+The CHD-CARE framework requires specific trained model weights and offline baseline features. To keep this repository lightweight, the `weights/` directory is **not** included by default. We host these large files publicly on [Zenodo](https://zenodo.org/records/20382397) to guarantee long-term availability.
+
+**Option A: Automatic Download (Recommended)**
+You do not need to download anything manually. Simply run the `run_demo.py` script. The system will automatically create the `weights/` directory, detect missing files, and securely download them from Zenodo with a progress bar.
+
+**Option B: Manual Download (For Offline Servers)**
+If you are deploying this on an offline GPU cluster, please manually download the following files:
+* [best_multiview_model.pth](https://zenodo.org/records/20382397/files/best_multiview_model.pth?download=1)
+* [best_singleview_model.pth](https://zenodo.org/records/20382397/files/best_singleview_model.pth?download=1)
+* [baseline_features.pt](https://zenodo.org/records/20382397/files/baseline_features.pt?download=1)
+
+Once downloaded, manually create a `weights/` folder in the root directory and place the three files inside.
+
+### 3.3 Running the Pipeline
+You can run the full diagnostic and XAI visualization pipeline on a specific patient case using the following command:
+
+```bash
+# Run both diagnosis and visualization for patient_001
+python run_demo.py --case_dir ./Demo_Cases/patient_001 --task both
+
+# Or run specific tasks separately
+python run_demo.py --case_dir ./Demo_Cases/patient_001 --task diagnose
+python run_demo.py --case_dir ./Demo_Cases/patient_001 --task visualize
+```
+
+### 3.4 Expected Output Structure
+Upon successful execution, the framework will automatically generate a patient-centric archive in the designated output directory (default is `./Output_Results/` located in the project root). This clean, hierarchical structure ensures seamless integration with electronic medical records (EMR) systems:
+
+```text
+CHD-CARE/
+└── Output_Results/
+    └── patient_001/                              <-- Patient-specific archive
+        ├── Diagnosis_patient_001.json            <-- Comprehensive diagnostic report with 4-class probabilities
+        └── XAI_Visuals/                          <-- Collaborative Explainable AI evidence
+            ├── apical_4_chamber_Heatmap.png      <-- Spatiotemporal attention score distribution overlay
+            ├── apical_4_chamber_BBox.png         <-- Defect localization bounding box (generated only for anomalous views)
+            └── XAI_KeyFrames_Summary.json        <-- Summary log detailing critical frame indices and negative view identifiers
+          

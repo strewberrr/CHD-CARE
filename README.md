@@ -9,7 +9,7 @@ As a collaborative AI framework, it integrates robust data preprocessing, joint 
 ## 1. System Requirements
 
 ### Hardware Requirements
-The training and inference scripts require a standard workstation equipped with a modern NVIDIA GPU. 
+The training and inference scripts require a standard workstation equipped with a modern NVIDIA GPU. **No non-standard hardware is required.**
 - **Recommended GPU:** NVIDIA RTX 3090 / A6000 or equivalent (Minimum 12GB VRAM for single-view; 24GB+ recommended for multi-view processing).
 - **RAM:** Minimum 32 GB.
 
@@ -33,6 +33,7 @@ pip install torch torchvision --index-url [https://download.pytorch.org/whl/cu12
 # 2. Install the remaining dependencies
 pip install -r requirements.txt
 ```
+**Typical Install Time:** On a standard workstation with a stable internet connection, creating the environment and installing all software dependencies (including PyTorch) typically takes **5 to 10 minutes**.
 
 ## 2. Directory Structure and Module Description
 
@@ -162,6 +163,8 @@ If you are deploying this on an offline GPU cluster, please manually download th
 
 Once downloaded, manually create a `weights/` folder in the root directory and place the three files inside.
 
+**Typical Download Time:** The initial automated (or manual) download of the required model weights and baseline features from Zenodo takes approximately **5 to 10 minutes**, depending on your local network bandwidth.
+
 ### 3.3 Running the Pipeline
 You can run the full diagnostic and XAI visualization pipeline on a specific patient case using the following command:
 
@@ -186,4 +189,26 @@ CHD-CARE/
             ├── apical_4_chamber_Heatmap.png      <-- Spatiotemporal attention score distribution overlay
             ├── apical_4_chamber_BBox.png         <-- Defect localization bounding box (generated only for anomalous views)
             └── XAI_KeyFrames_Summary.json        <-- Summary log detailing critical frame indices and negative view identifiers
-          
+```
+
+### 3.5 Expected Run Time
+Thanks to the efficient architectural design, the inference process is highly optimized. On a standard workstation equipped with an NVIDIA RTX 3090 (or equivalent), running the complete pipeline (both multi-view diagnosis and single-view XAI visualization) for a single patient case takes approximately **1 to 3 seconds**. Processing time scales linearly with the number of standard views provided in the patient's directory.
+
+## 4. Applying CHD-CARE to New Patient Cohorts
+
+To utilize the CHD-CARE framework on new clinical data from your own institution, please follow these guidelines:
+
+**1. Data Formatting:**
+Organize your raw color Doppler echocardiography videos (supported formats: `.mp4`, `.avi`) into patient-specific directories. Ensure that the videos contain at least one complete cardiac cycle.
+```text
+Your_Institution_Dataset/
+├── new_patient_A/
+│   ├── view_1.avi
+│   └── view_2.avi
+└── new_patient_B/
+    └── ...`
+
+**2. Execution:**
+Use the provided run_demo.py script to process your clinical data by simply pointing the --case_dir argument to your new patient folder.
+
+python run_demo.py --case_dir /path/to/Your_Institution_Dataset/new_patient_A --output_dir ./Output_Results --task both

@@ -33,11 +33,12 @@ pip install torch torchvision --index-url [https://download.pytorch.org/whl/cu12
 # 2. Install the remaining dependencies
 pip install -r requirements.txt
 ```
+
 **Typical Install Time:** On a standard workstation with a stable internet connection, creating the environment and installing all software dependencies (including PyTorch) typically takes **5 to 10 minutes**.
 
 ## 2. Directory Structure and Module Description
 
-The repository is modularized to separate data curation, architectural definition, training logic, and interpretability analysis, facilitating reproducibility and ablation studies.
+The repository is modularized to separate data curation, architectural definition, training logic, interpretability analysis, and end-to-end inference APIs, facilitating both clinical evaluation and technical ablation studies.
 
 ```text
 CHD-CARE/
@@ -56,15 +57,15 @@ CHD-CARE/
 │   ├── dataset_baseline_feature.py
 │   ├── dataset_mutil_views.py
 │   └── dataset_single_view.py
-├── functions/              # Core training/evaluation functions and loss calculations
+├── functions/                  # Core training/evaluation functions and loss calculations
 │   ├── functions_baseline_feature.py
 │   ├── functions_multi_views.py
 │   └── functions_single_view.py
-├── nets/                   # Network architecture definitions
+├── nets/                       # Network architecture definitions
 │   ├── model_baseline_feature.py
 │   ├── model_multi_views.py
 │   └── model_single_view.py
-├── Test/                       # Model inference and testing scripts
+├── Test/                       # Model evaluation scripts
 │   └── test_multi_views.py
 ├── Train/                      # Model training execution scripts
 │   ├── train_multi_views.py
@@ -73,6 +74,10 @@ CHD-CARE/
 │   ├── hetmaps_and_location_gradcam.py
 │   ├── hetmaps_and_location_gradcampp.py
 │   └── hetmaps_and_location_ours.py
+├── CHD_CARE_Online_Demo_Operation_Guide.pdf # Detailed operation manual for the online demo platform
+├── chd_care_tool.py            # High-level wrapper for automated inference and weight management
+├── inference.py                # Core API engine for executing diagnosis and XAI generation
+├── run_demo.py                 # Out-of-the-box demonstration script for clinical use cases
 └── utils.py                    # Global utility functions
 ```
 
@@ -115,6 +120,14 @@ CHD-CARE/
 
 * 🧰 **`utils.py`** — Contains fundamental utility functions called globally across the project, including random seed fixation, learning rate scheduling, checkpoint saving, evaluation metric calculation, denormalization, and confusion matrix updates.
 
+* 🎥 **`Demo & Inference Pipeline (Core API)/`** — Scripts designed for seamless deployment, automated weight downloading, and out-of-the-box clinical evaluation.
+  * `run_demo.py`: The primary entry point for users and reviewers. It executes the complete end-to-end demonstration on sample patient cases via command-line arguments.
+  * `chd_care_tool.py`: A high-level object-oriented wrapper (CHD_CARE class). It manages environment setup, automates the downloading of weights from Zenodo (if missing), and handles patient-centric result directory creation.
+  * `inference.py`: The underlying computation engine (CHDCareAPI class). It encapsulates the initialization of PyTorch models, data transformation, multi-view parallel processing logic, and the mathematical generation of XAI spatial heatmaps.
+
+* 📄 **`Documentation/`** — Guides and manuals for system usage.
+  * `CHD_CARE_Online_Demo_Operation_Guide.pdf`: A comprehensive, step-by-step operational guide detailing how to access, navigate, and utilize the online research demonstration platform.
+  
 ## 3. Quick Start: Demo Inference
 
 To facilitate easy reproduction and clinical evaluation, we provide an end-to-end inference API (`chd_care_tool.py`) and a ready-to-use demonstration script (`run_demo.py`).
@@ -192,7 +205,7 @@ CHD-CARE/
 ```
 
 ### 3.5 Expected Run Time
-Thanks to the efficient architectural design, the inference process is highly optimized. On a standard workstation equipped with an NVIDIA RTX 3090 (or equivalent), running the complete pipeline (both multi-view diagnosis and single-view XAI visualization) for a single patient case takes approximately **1 to 3 seconds**. Processing time scales linearly with the number of standard views provided in the patient's directory.
+Thanks to the efficient architectural design, the inference process is highly optimized. On a standard workstation equipped with an NVIDIA RTX 3090 (or equivalent), running the complete pipeline (both multi-view diagnosis and single-view XAI visualization) for a single patient case takes approximately **5 to 10 seconds**. Processing time scales linearly with the number of standard views provided in the patient's directory.
 
 ## 4. Applying CHD-CARE to New Patient Cohorts
 
@@ -206,9 +219,37 @@ Your_Institution_Dataset/
 │   ├── view_1.avi
 │   └── view_2.avi
 └── new_patient_B/
-    └── ...`
+    └── ...
+```
 
 **2. Execution:**
 Use the provided run_demo.py script to process your clinical data by simply pointing the --case_dir argument to your new patient folder.
 
+```bash
 python run_demo.py --case_dir /path/to/Your_Institution_Dataset/new_patient_A --output_dir ./Output_Results --task both
+```
+
+## 5. Online Demo Access
+
+To facilitate editors, reviewers, and researchers in experiencing the full computational and visualization workflow of CHD-CARE without local code deployment or environment configuration, we provide a dedicated online research demonstration platform.
+
+**🌐 Online Demo URL:** [http://124.156.173.246:8000/](http://124.156.173.246:8000/)
+
+### 5.1 Core Functionality & Data Guidelines
+Users can interact with the web interface to inspect model inference outputs and diagnostic evidence dynamically. **Please note that due to strict medical data compliance and privacy regulations, no sample videos are built into the platform.** To help users quickly familiarize themselves with the workflow, we provide an online website usage demonstration package/video hosted on Zenodo ([📥 https://zenodo.org/records/20382397/files/CHD_CARE_Online_Demo_Video.mp4?download=1](https://zenodo.org/records/20382397/files/CHD_CARE_Online_Demo_Video.mp4?download=1)). To evaluate the system, you can choose from the following data inputs:
+1. **Using Demo Dataset:** Go back to **Section 3.1 (Sample Data Preparation)**, download our prepared 4 representative cases (encompassing VSD, ASD, PDA, and Normal) via Zenodo, and upload them to the web interface.
+2. **Using Custom Data:** You can manually upload your own **fully de-identified** color Doppler echocardiography videos for case-level inference.
+
+Once the data processing is complete, the platform graphically displays 4-class diagnostic probabilities alongside multi-layer visual guidance, including original video loops, spatiotemporal attention heatmap overlays, model-selected key-frame inspection, and defect-region bounding boxes.
+
+### 5.2 Access Instructions & Account Provisioning
+For infrastructure stability and rigorous academic compliance, access to the platform requires user authentication. We provide a highly detailed, step-by-step website operation manual titled [**`CHD_CARE_Online_Demo_Operation_Guide.pdf`**](./CHD_CARE_Online_Demo_Operation_Guide.pdf), which is available directly in the root directory of this GitHub repository. Following the protocols outlined in this guide, we offer two separate versions of access provisioning:
+* **Public Version:** The credentials are not explicitly listed in this public repository. If you are a researcher or peer reviewer requiring access for independent functional testing, please contact us via email at 📩 **`zyuhui0631@gmail.com`** with a brief description of your affiliation and testing purpose. A dedicated testing account will be provisioned upon verification.
+* **Reviewer Version:** An out-of-the-box reviewer account as specified in the journal submission guidelines has been uploaded directly into the peer-review system. Reviewers can use these credentials for immediate academic evaluation.
+
+### 5.3 Demo Data Download for Web Upload
+To quickly test the online platform without preparing your own files, please use the compliant, de-identified evaluation package hosted on Zenodo (same as the package mentioned in Section 3.1; links are subject to future updates):
+
+* [📥 Direct Download: Demo_Cases.zip](https://zenodo.org/records/20382397/files/Demo_Cases.zip?download=1)
+
+> ⚠️ **Important Disclaimer:** Please ensure that all custom uploaded videos are completely stripped of Protected Health Information (PHI). This online platform is strictly intended for peer-review and academic evaluation only; it is not a certified medical device and must never be used for clinical diagnosis, treatment decisions, or patient management.
